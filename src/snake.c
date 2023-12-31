@@ -119,15 +119,32 @@ int main(int argc, char** argv) {
 
     // TODO: Remove this message, uncomment the code below this message
     //       and implement Part 1A here.
-    printf(
-        "             ____   \n"
-        "Hello       / . .\\ \n"
-        "CS 300      \\  ---<\n"
-        "student!     \\  /  \n"
-        "   __________/ /    \n"
-        "-=:___________/\n");
+    // printf(
+    //     "             ____   \n"
+    //     "Hello       / . .\\ \n"
+    //     "CS 300      \\  ---<\n"
+    //     "student!     \\  /  \n"
+    //     "   __________/ /    \n"
+    //     "-=:___________/\n");
 
-    // initialize_window(width, height);
+    initialize_window(width, height);
     // TODO: implement the game loop here (Part 1A)!
-    // end_game(cells, width, height, &snake);
+    usleep(1000 * 1000);
+
+    // Game loop
+    while (!g_game_over) {
+        // Get user input
+        enum input_key input = get_input();
+
+        // Call the update function with the obtained input
+        update(cells, width, height, &snake, input, 0);
+
+        // Render the game after the update
+        render_game(cells, width, height);
+
+        // Add a small delay to control the speed of the game
+        usleep(100 * 1000);  // 100ms
+    }
+
+    end_game(cells, width, height, &snake);
 }

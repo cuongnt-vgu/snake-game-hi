@@ -11,6 +11,7 @@
 #define FLAG_SNAKE 0b0010       // equals 2
 #define FLAG_WALL 0b0100        // equals 4
 #define FLAG_FOOD 0b1000        // equals 8
+#define FLAG_EMPTY 0
 
 /**
  * Enumerated types, also known as "enums", are a way to create a set of named
@@ -22,6 +23,8 @@
 enum input_key { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_NONE };
 
 // TODO: declare global variables needed for your snake (as `extern`)! (part 1A)
+extern size_t g_board_width;   // Declare g_board_width as a global variable
+extern size_t g_board_height;  // Declare g_board_height as a global variable
 
 /** Global variables for game status.
  *

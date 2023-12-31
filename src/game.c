@@ -8,6 +8,8 @@
 #include "linked_list.h"
 #include "mbstrings.h"
 
+enum input_key last_known_direction = INPUT_RIGHT;
+
 /** Updates the game by a single step, and modifies the game information
  * accordingly. Arguments:
  *  - cells: a pointer to the first integer in an array of integers representing
@@ -29,6 +31,120 @@ void update(int* cells, size_t width, size_t height, snake_t* snake_p,
     // walls, so it does not handle the case where a snake runs off the board.
 
     // TODO: implement!
+    if (g_game_over) {
+        return;
+    }
+    // Find the head of the snake
+    int head_index = -1;
+    for (size_t i = 0; i < width * height; ++i) {
+        if (cells[i] == FLAG_SNAKE) {
+            head_index = i;
+            break;
+        }
+    }
+
+    if (head_index == -1) {
+        // Snake not found on the board, unexpected state
+        g_game_over = 1;
+        return;
+    }
+
+    // Determine the new head position based on the input (shift to the right)
+    //size_t new_head_index = head_index + 1;
+
+    size_t new_head_index;
+    switch (input) {
+        case INPUT_UP:
+            new_head_index = head_index - width;
+            break;
+        case INPUT_DOWN:
+            new_head_index = head_index + width;
+            break;
+        case INPUT_LEFT:
+            new_head_index = head_index - 1;
+            break;
+        case INPUT_RIGHT:
+            new_head_index = head_index + 1;
+            break;
+        default:
+            // Invalid input, do nothing
+            switch (last_known_direction) {
+                case INPUT_UP:
+                    new_head_index = head_index - width;
+                    break;
+                case INPUT_DOWN:
+                    new_head_index = head_index + width;
+                    break;
+                case INPUT_LEFT:
+                    new_head_index = head_index - 1;
+                    break;
+                case INPUT_RIGHT:
+                    new_head_index = head_index + 1;
+                    break;
+                default:
+                    // Invalid direction, do not update the snake's position
+                    return;
+            }
+    }
+
+    // Check if the new head position is valid
+    if ((int)new_head_index < 0 || new_head_index >= width * height) {
+        // Snake hit the board boundary
+        g_game_over = 1;
+        return;
+    }
+
+    if (cells[new_head_index] == FLAG_WALL) {
+        // Snake collided with a wall
+        g_game_over = 1;
+        return;
+    }
+
+    if (cells[new_head_index] == FLAG_FOOD) {
+        g_score += 1;
+
+        // Move the snake to the new position
+        cells[new_head_index] = FLAG_SNAKE;
+
+        // If not growing, remove the tail
+        if (!growing) {
+            int tail_index = -1;
+            for (size_t i = 0; i < width * height; ++i) {
+                if (cells[i] == FLAG_SNAKE && i != new_head_index) {
+                    tail_index = i;
+                    break;
+                }
+            }
+
+            if (tail_index != -1) {
+                cells[tail_index] = FLAG_PLAIN_CELL;
+            }
+        }
+        // Place new food on the board
+        place_food(cells, width, height);
+    } else {
+        // Move the snake to the new position
+        cells[new_head_index] = FLAG_SNAKE;
+
+        // If not growing, remove the tail
+        if (!growing) {
+            int tail_index = -1;
+            for (size_t i = 0; i < width * height; ++i) {
+                if (cells[i] == FLAG_SNAKE && i != new_head_index) {
+                    tail_index = i;
+                    break;
+                }
+            }
+
+            if (tail_index != -1) {
+                cells[tail_index] = FLAG_PLAIN_CELL;
+            }
+        }
+    }
+    // Update last_known_direction only when a new input is provided
+    if (input != INPUT_NONE) {
+        last_known_direction = input;
+    }
 }
 
 /** Sets a random space on the given board to food.
@@ -68,4 +184,5 @@ void read_name(char* write_into) {
  */
 void teardown(int* cells, snake_t* snake_p) {
     // TODO: implement!
+    free(cells);
 }
