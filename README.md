@@ -4,6 +4,10 @@ Bonus assignment: Snake game, from CSCI 0300 Project 1 - Snake
 ===========================
 Original project page: https://cs.brown.edu/courses/csci0300/2023/assign/projects/project1.html
 
+## Student
+1.Nguyen Xuan Phu - 10422065
+2.Ta Le Khoi Vi - 10422083 
+3.Tran Phuc Quy - 10422077
 ## Learning Objectives
 In this assignment, you will:
 
